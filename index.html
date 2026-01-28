@@ -1149,7 +1149,19 @@
                 return;
             }
 
-            // Demo mode - create local user
+            // Check if user exists in localStorage
+            const savedUser = localStorage.getItem('7habits_user');
+            if (savedUser) {
+                const parsed = JSON.parse(savedUser);
+                if (parsed.email === email) {
+                    // Existing user - restore data
+                    currentUser = parsed;
+                    showMainApp();
+                    return;
+                }
+            }
+
+            // New user - create local user
             currentUser = {
                 email: email,
                 name: email.split('@')[0],
