@@ -959,6 +959,21 @@
         </div>
     </div>
 
+    <!-- DAY DETAIL MODAL -->
+    <div class="modal-overlay" id="dayDetailModal">
+        <div class="modal-content" style="text-align:center;">
+            <div style="font-size:48px; margin-bottom:10px;" id="dayDetailIcon">😊</div>
+            <div class="login-title" id="dayDetailTitle">Day 1</div>
+            <div id="dayDetailDate" style="font-size:12px; color:var(--text-gray); margin-bottom:15px;">2026-01-28</div>
+            <div
+                style="background:var(--light-gray); border-radius:10px; padding:15px; margin-bottom:20px; text-align:left;">
+                <div style="font-size:13px; color:var(--text-gray); margin-bottom:5px;">今日の学び・気づき</div>
+                <div id="dayDetailNote" style="font-size:14px; color:var(--navy); line-height:1.6;">メモがありません</div>
+            </div>
+            <button class="btn-secondary" onclick="closeDayDetailModal()">閉じる</button>
+        </div>
+    </div>
+
     <script>
         // ========================================
         // 7Habits Daily - Frontend Logic
@@ -1479,11 +1494,29 @@
                     dayEl.title = dayData.note;
                 }
 
+                // Add click to view detail
+                if (dayData) {
+                    dayEl.style.cursor = 'pointer';
+                    dayEl.onclick = () => showDayDetail(i, dateStr, dayData);
+                }
+
                 calendar.appendChild(dayEl);
             }
         }
 
         let todayProactive = null;
+
+        function showDayDetail(dayNum, dateStr, dayData) {
+            document.getElementById('dayDetailIcon').textContent = dayData.proactive ? '😊' : '😔';
+            document.getElementById('dayDetailTitle').textContent = 'Day ' + dayNum;
+            document.getElementById('dayDetailDate').textContent = dateStr;
+            document.getElementById('dayDetailNote').textContent = dayData.note || 'メモがありません';
+            document.getElementById('dayDetailModal').classList.add('active');
+        }
+
+        function closeDayDetailModal() {
+            document.getElementById('dayDetailModal').classList.remove('active');
+        }
 
         function setTodayProactive(value) {
             todayProactive = value;
