@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>7Habits Daily v1.0</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="7Habits Daily">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --white: #FFFFFF;
+            --off-white: #FAFAFA;
+            --light-gray: #F5F5F5;
+            --navy: #1E3A5F;
+            --navy-dark: #0F2A4A;
+            --gold: #C9A962;
+            --gold-light: rgba(201, 169, 98, 0.15);
+            --gold-glow: rgba(201, 169, 98, 0.3);
+            --text-dark: #1E3A5F;
+            --text-gray: #6B7B8C;
+            --border: rgba(30, 58, 95, 0.1);
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--off-white);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--navy);
+        }
+
+        .header-sub {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .user-badge {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-top: 10px;
+            padding: 5px 14px;
+            background: var(--light-gray);
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .streak-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.15), rgba(201, 169, 98, 0.05));
+            border: 1px solid var(--gold);
+            padding: 6px 14px;
+            border-radius: 25px;
+            margin-top: 10px;
+            margin-left: 8px;
+        }
+
+        .streak-icon {
+            font-size: 16px;
+        }
+
+        .streak-count {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--gold);
+        }
+
+        .streak-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            color: var(--text-gray);
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 22px;
+            overflow-y: auto;
+            padding-bottom: 100px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            color: var(--gold);
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        }
+
+        /* LOGIN SCREEN */
+        .login-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .login-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+            color: var(--navy);
+        }
+
+        .login-sub {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .text-input {
+            width: 100%;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        /* PRACTICE CARD */
+        .practice-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .practice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--navy));
+        }
+
+        .practice-habit-badge {
+            display: inline-block;
+            background: var(--navy);
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        .practice-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+
+        .practice-description {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-gray);
+        }
+
+        .practice-source {
+            margin-top: 15px;
+            font-size: 11px;
+            color: var(--gold);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* DAILY CHECKIN */
+        .checkin-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .checkin-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--navy);
+        }
+
+        .checkin-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .checkin-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkin-label {
+            font-size: 14px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkin-label .icon {
+            font-size: 20px;
+        }
+
+        .checkin-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toggle-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--light-gray);
+            color: var(--text-gray);
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.selected {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        /* DECLARATION */
+        .declaration-card {
+            background: linear-gradient(145deg, var(--navy), var(--navy-dark));
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+
+        .declaration-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .declaration-text {
+            font-size: 16px;
+            line-height: 1.8;
+            font-weight: 500;
+        }
+
+        .declaration-date {
+            margin-top: 15px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* BUTTONS */
+        .btn-main {
+            background: var(--gold);
+            color: var(--navy-dark);
+            border: none;
+            padding: 16px;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--gold-glow);
+            transition: all 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn-main:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn-main:hover:not(:disabled) {
+            box-shadow: 0 6px 20px var(--gold-glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-gray);
+            padding: 12px;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* BOTTOM NAV */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+            z-index: 9999;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-gray);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+            font-size: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            color: var(--gold);
+        }
+
+        .nav-item .icon {
+            font-size: 22px;
+        }
+
+        /* CARDS LIST */
+        .cards-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-mini {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .card-mini:hover {
+            border-color: var(--gold);
+        }
+
+        .card-mini-habit {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--navy);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .card-mini-content {
+            flex: 1;
+        }
+
+        .card-mini-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .card-mini-desc {
+            font-size: 12px;
+            color: var(--text-gray);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-mini-fav {
+            font-size: 20px;
+            color: var(--border);
+            cursor: pointer;
+        }
+
+        .card-mini-fav.active {
+            color: var(--gold);
+        }
+
+        /* FILTER TABS */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            color: var(--text-gray);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tab.active {
+            background: var(--navy);
+            border-color: var(--navy);
+            color: var(--white);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: var(--text-gray);
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 14px;
+            color: var(--text-dark);
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        /* SUCCESS STATE */
+        .success-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .success-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+
+        .success-sub {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        /* 30 DAY CHALLENGE CALENDAR */
+        .challenge-calendar {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .challenge-day {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--light-gray);
+            border: 2px solid var(--border);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .challenge-day.success {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .challenge-day.fail {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .challenge-day.today {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--gold-glow);
+        }
+
+        .challenge-day.future {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        .challenge-day-num {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .challenge-day-icon {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>7Habits Daily</h1>
+        <div class="header-sub">DAILY PRACTICE TRACKER</div>
+        <div id="userInfo" style="display: none;">
+            <span class="user-badge" id="userName">...</span>
+            <span class="streak-display">
+                <span class="streak-icon">🔥</span>
+                <span class="streak-count" id="streakCount">0</span>
+                <span class="streak-label">DAYS</span>
+            </span>
+        </div>
+    </header>
+
+    <main>
+        <!-- LOGIN SCREEN -->
+        <div id="loginScreen" class="screen active">
+            <div class="login-card">
+                <div class="login-title">Welcome</div>
+                <div class="login-sub">7つの習慣を毎日実践しよう</div>
+                <div class="input-group">
+                    <label class="input-label">EMAIL</label>
+                    <input type="email" class="text-input" id="loginEmail" placeholder="email@example.com">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">PIN</label>
+                    <input type="password" class="text-input" id="loginPin" placeholder="4桁のPIN" maxlength="4">
+                </div>
+                <button class="btn-main" onclick="login()">ログイン</button>
+                <button class="btn-secondary" onclick="showRegister()">新規登録</button>
+            </div>
+        </div>
+
+        <!-- HOME SCREEN -->
+        <div id="homeScreen" class="screen">
+            <div class="section-title">TODAY'S PRACTICE</div>
+            <div class="practice-card" id="todayCard">
+                <div class="practice-habit-badge" id="cardHabitBadge">第1の習慣</div>
+                <div class="practice-title" id="cardTitle">主体的である</div>
+                <div class="practice-description" id="cardDescription">刺激と反応の間を意識し、自分の選択に責任を持ちましょう。</div>
+                <div class="practice-source" id="cardSource">出典：第3回</div>
+            </div>
+
+            <div class="section-title">DAILY CHECK-IN</div>
+            <div class="checkin-card">
+                <div class="checkin-title">✨ 今日の4つの側面</div>
+                <div class="checkin-item">
+                    <div class="checkin-label"><span class="icon">💪</span> 肉体（運動・睡眠・栄養）</div>
+                    <div class="checkin-toggle">
+                        <button class="toggle-btn" data-aspect="physical" onclick="toggleCheckin(this)">✓</button>
+                    </div>
+                </div>
+                <div class="checkin-item">
+                    <div class="checkin-label"><span class="icon">🧘</span> 精神（瞑想・読書・自然）</div>
+                    <div class="checkin-toggle">
+                        <button class="toggle-btn" data-aspect="spiritual" onclick="toggleCheckin(this)">✓</button>
+                    </div>
+                </div>
+                <div class="checkin-item">
+                    <div class="checkin-label"><span class="icon">📚</span> 知性（学習・計画・執筆）</div>
+                    <div class="checkin-toggle">
+                        <button class="toggle-btn" data-aspect="intellectual" onclick="toggleCheckin(this)">✓</button>
+                    </div>
+                </div>
+                <div class="checkin-item">
+                    <div class="checkin-label"><span class="icon">🤝</span> 社会・情緒（奉仕・共感）</div>
+                    <div class="checkin-toggle">
+                        <button class="toggle-btn" data-aspect="social" onclick="toggleCheckin(this)">✓</button>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-main" id="checkinBtn" onclick="submitCheckin()" disabled>チェックイン完了</button>
+        </div>
+
+        <!-- DECLARATION SCREEN -->
+        <div id="declarationScreen" class="screen">
+            <div class="section-title">MY DECLARATION</div>
+            <div class="declaration-card">
+                <div class="declaration-label">自己宣誓</div>
+                <div class="declaration-text" id="declarationText">
+                    まだ自己宣誓が設定されていません。<br>
+                    実践会で決めた「取り組みたいこと」を登録しましょう。
+                </div>
+                <div class="declaration-date" id="declarationDate"></div>
+            </div>
+            <button class="btn-main" onclick="openDeclarationModal()">✏️ 宣誓を編集</button>
+        </div>
+
+        <!-- CARDS SCREEN -->
+        <div id="cardsScreen" class="screen">
+            <div class="section-title">100 PRACTICE CARDS</div>
+            <div class="filter-tabs" id="filterTabs">
+                <div class="filter-tab active" data-habit="all" onclick="filterCards('all')">すべて</div>
+                <div class="filter-tab" data-habit="0" onclick="filterCards(0)">基本原則</div>
+                <div class="filter-tab" data-habit="1" onclick="filterCards(1)">習慣1</div>
+                <div class="filter-tab" data-habit="2" onclick="filterCards(2)">習慣2</div>
+                <div class="filter-tab" data-habit="3" onclick="filterCards(3)">習慣3</div>
+                <div class="filter-tab" data-habit="4" onclick="filterCards(4)">習慣4</div>
+                <div class="filter-tab" data-habit="5" onclick="filterCards(5)">習慣5</div>
+                <div class="filter-tab" data-habit="6" onclick="filterCards(6)">習慣6</div>
+                <div class="filter-tab" data-habit="7" onclick="filterCards(7)">習慣7</div>
+            </div>
+            <div class="cards-grid" id="cardsGrid"></div>
+        </div>
+
+        <!-- 30日間テスト SCREEN -->
+        <div id="challenge30Screen" class="screen">
+            <div class="section-title">🎯 主体的30日間テスト</div>
+
+            <!-- テスト説明カード -->
+            <div class="practice-card" id="challengeIntroCard">
+                <div class="practice-habit-badge">第1の習慣</div>
+                <div class="practice-title">主体性の30日間チャレンジ</div>
+                <div class="practice-description">
+                    30日間、刺激と反応の間で主体的な選択を続けましょう。<br>
+                    毎日の振り返りを記録し、自分の変化を観察してください。
+                </div>
+            </div>
+
+            <!-- テスト状態 -->
+            <div id="challengeNotStarted">
+                <div class="checkin-card">
+                    <div class="checkin-title">📅 チャレンジを開始</div>
+                    <p style="font-size:14px; color:var(--text-gray); margin-bottom:15px;">
+                        今日から30日間、主体的な選択を意識して過ごしましょう。<br>
+                        毎日「主体的だったか」を振り返り、記録します。
+                    </p>
+                    <button class="btn-main" onclick="startChallenge()">🚀 30日間テスト開始</button>
+                </div>
+            </div>
+
+            <!-- テスト進行中 -->
+            <div id="challengeInProgress" style="display:none;">
+                <!-- 進捗サマリー -->
+                <div class="checkin-card" style="text-align:center; padding:25px;">
+                    <div style="font-size:48px; font-weight:700; color:var(--gold); font-family:'Montserrat',sans-serif;"
+                        id="challengeDay">1</div>
+                    <div style="font-size:12px; color:var(--text-gray); letter-spacing:0.2em; margin-bottom:10px;">DAY /
+                        30</div>
+                    <div style="display:flex; justify-content:center; gap:20px; margin-top:15px;">
+                        <div>
+                            <div style="font-size:24px; font-weight:700; color:var(--success);" id="successCount">0
+                            </div>
+                            <div style="font-size:10px; color:var(--text-gray);">主体的な日</div>
+                        </div>
+                        <div>
+                            <div style="font-size:24px; font-weight:700; color:var(--text-gray);" id="pendingCount">30
+                            </div>
+                            <div style="font-size:10px; color:var(--text-gray);">残り</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 30日カレンダー -->
+                <div class="checkin-card">
+                    <div class="checkin-title">📊 30日間の記録</div>
+                    <div class="challenge-calendar" id="challengeCalendar"></div>
+                </div>
+
+                <!-- 今日の振り返り -->
+                <div class="checkin-card" id="todayReflectionCard">
+                    <div class="checkin-title">✍️ 今日の振り返り</div>
+                    <div style="margin-bottom:15px;">
+                        <div style="font-size:13px; color:var(--text-gray); margin-bottom:10px;">今日は主体的に過ごせましたか？</div>
+                        <div style="display:flex; gap:10px;">
+                            <button class="toggle-btn" id="proactiveYes" onclick="setTodayProactive(true)"
+                                style="flex:1;">😊 はい</button>
+                            <button class="toggle-btn" id="proactiveNo" onclick="setTodayProactive(false)"
+                                style="flex:1;">😔 いいえ</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size:13px; color:var(--text-gray); margin-bottom:10px;">今日の学び・気づき</div>
+                        <textarea id="todayNote" placeholder="例：朝の渋滞でイライラしそうになったが、一時停止して音楽を楽しむ選択をした。"
+                            style="min-height:80px;"></textarea>
+                    </div>
+                    <button class="btn-main" onclick="saveTodayReflection()" id="saveReflectionBtn"
+                        disabled>振り返りを保存</button>
+                </div>
+            </div>
+
+            <!-- テスト完了 -->
+            <div id="challengeCompleted" style="display:none;">
+                <div class="success-message">
+                    <div class="success-icon">🏆</div>
+                    <div class="success-title">30日間テスト完了！</div>
+                    <div class="success-sub" id="completionMessage">おめでとうございます！30日間のチャレンジを達成しました。</div>
+                </div>
+                <div class="checkin-card">
+                    <div class="checkin-title">📊 結果サマリー</div>
+                    <div class="checkin-item">
+                        <div class="checkin-label">主体的な日</div>
+                        <div id="finalSuccessCount">0日</div>
+                    </div>
+                    <div class="checkin-item">
+                        <div class="checkin-label">成功率</div>
+                        <div id="successRate">0%</div>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="resetChallenge()">🔄 もう一度チャレンジ</button>
+            </div>
+        </div>
+
+        <!-- PROFILE SCREEN -->
+        <div id="profileScreen" class="screen">
+            <div class="section-title">PROFILE</div>
+            <div class="checkin-card">
+                <div class="checkin-title">👤 ユーザー情報</div>
+                <div class="checkin-item">
+                    <div class="checkin-label">名前</div>
+                    <div id="profileName">-</div>
+                </div>
+                <div class="checkin-item">
+                    <div class="checkin-label">連続日数</div>
+                    <div id="profileStreak">0日</div>
+                </div>
+                <div class="checkin-item">
+                    <div class="checkin-label">総チェックイン</div>
+                    <div id="profileTotal">0回</div>
+                </div>
+            </div>
+            <button class="btn-secondary" onclick="logout()">ログアウト</button>
+        </div>
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottomNav" style="display: none;">
+        <div class="nav-item active" onclick="showScreen('home')">
+            <span class="icon">🏠</span>
+            HOME
+        </div>
+        <div class="nav-item" onclick="showScreen('challenge30')">
+            <span class="icon">🎯</span>
+            30日
+        </div>
+        <div class="nav-item" onclick="showScreen('cards')">
+            <span class="icon">🃏</span>
+            CARDS
+        </div>
+        <div class="nav-item" onclick="showScreen('profile')">
+            <span class="icon">👤</span>
+            ME
+        </div>
+    </nav>
+
+    <!-- DECLARATION MODAL -->
+    <div class="modal-overlay" id="declarationModal">
+        <div class="modal-content">
+            <div class="login-title">自己宣誓を編集</div>
+            <div class="login-sub" style="margin-bottom: 20px;">実践会で決めた「取り組みたいこと」を記録しましょう</div>
+            <textarea id="declarationInput" placeholder="例：毎日、刺激と反応の間で一時停止する&#10;例：週に一度、役割ごとの目標を設定する"></textarea>
+            <button class="btn-main" onclick="saveDeclaration()">保存</button>
+            <button class="btn-secondary" onclick="closeDeclarationModal()">キャンセル</button>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // 7Habits Daily - Frontend Logic
+        // ========================================
+
+        const APP_VERSION = 'v1.0';
+        let currentUser = null;
+        let practiceCards = [];
+        let checkinState = { physical: false, spiritual: false, intellectual: false, social: false };
+
+        // SCRIPT_URL placeholder - Replace with actual GAS URL
+        const SCRIPT_URL = '';
+
+        // ----------------------
+        // INITIALIZATION
+        // ----------------------
+        async function init() {
+            await loadPracticeCards();
+            checkLocalSession();
+        }
+
+        async function loadPracticeCards() {
+            // 直接埋め込み（CORSエラー回避）
+            practiceCards = [
+                { id: 1, habit: 1, title: "刺激と反応の間を意識する", description: "今日、何かに反応する前に一時停止し、自分の選択を意識しましたか？", source: "第3回" },
+                { id: 2, habit: 1, title: "主体的な言葉を使う", description: "「〜しなければならない」を「私は〜を選択する」に言い換える練習をしましょう。", source: "第3回" },
+                { id: 3, habit: 1, title: "影響の輪にフォーカス", description: "今日、自分がコントロールできることだけに集中しましたか？", source: "第3回" },
+                { id: 4, habit: 1, title: "関心の輪を手放す", description: "自分ではどうにもできないことに時間やエネルギーを使っていませんか？", source: "第3回" },
+                { id: 5, habit: 1, title: "自覚の力を使う", description: "自分自身を客観的に見つめる時間を取りましたか？", source: "第3回" },
+                { id: 6, habit: 1, title: "想像力を働かせる", description: "現状を超えた可能性を頭の中で想像してみましょう。", source: "第3回" },
+                { id: 7, habit: 1, title: "良心に従う", description: "今日の行動は、自分の価値観と一致していましたか？", source: "第3回" },
+                { id: 8, habit: 1, title: "意志を発揮する", description: "周りに流されず、自覚に基づいて行動できましたか？", source: "第3回" },
+                { id: 9, habit: 1, title: "反応的な言葉を避ける", description: "「できない」「あの人のせい」と言いそうになったら立ち止まりましょう。", source: "第3回" },
+                { id: 10, habit: 1, title: "小さな約束を守る", description: "自分への小さな約束を一つして、それを守りましょう。", source: "第3回" },
+                { id: 11, habit: 1, title: "セルフ・パラダイムを見直す", description: "「自分は〜だ」という思い込みを疑ってみましょう。", source: "第3回" },
+                { id: 12, habit: 1, title: "模範になる", description: "批判するのではなく、自らが良い手本になりましょう。", source: "第3回" },
+                { id: 13, habit: 1, title: "光を照らす人になる", description: "裁く人ではなく、光を照らす人になることを意識しましょう。", source: "第3回" },
+                { id: 14, habit: 1, title: "問題解決者になる", description: "問題を作り出すのではなく、解決の一助になりましょう。", source: "第3回" },
+                { id: 15, habit: 2, title: "終わりを思い描く", description: "今日という一日を、人生の最後を念頭に置いて始めましたか？", source: "第4回" },
+                { id: 16, habit: 2, title: "弔辞を想像する", description: "あなたの葬儀で、誰に何と言われたいですか？", source: "第4回" },
+                { id: 17, habit: 2, title: "正しい壁に梯子をかける", description: "効率よく登ることより、正しい方向に向かっているか確認しましょう。", source: "第4回" },
+                { id: 18, habit: 2, title: "ミッション・ステートメントを確認する", description: "あなたの個人憲法を今日確認しましたか？", source: "第4回" },
+                { id: 19, habit: 2, title: "役割を明確にする", description: "あなたの人生における重要な役割は何ですか？", source: "第4回" },
+                { id: 20, habit: 2, title: "各役割の目標を持つ", description: "それぞれの役割で達成したい長期目標を意識していますか？", source: "第4回" },
+                { id: 21, habit: 2, title: "知的創造を行う", description: "行動する前に、頭の中でビジョンを描きましたか？", source: "第4回" },
+                { id: 22, habit: 2, title: "中心を確認する", description: "あなたの人生の中心にあるものは何ですか？原則中心ですか？", source: "第4回" },
+                { id: 23, habit: 2, title: "安定を感じる", description: "心の安らぎと自尊心を感じていますか？", source: "第4回" },
+                { id: 24, habit: 2, title: "指針を持つ", description: "人生の方向性を決める判断基準を意識していますか？", source: "第4回" },
+                { id: 25, habit: 2, title: "知恵を磨く", description: "バランスのとれた判断ができていますか？", source: "第4回" },
+                { id: 26, habit: 2, title: "力を発揮する", description: "決めたことを実行する力を持っていますか？", source: "第4回" },
+                { id: 27, habit: 2, title: "右脳でイメージする", description: "五感をフルに働かせて、理想の姿を想像してみましょう。", source: "第4回" },
+                { id: 28, habit: 2, title: "脚本を書き直す", description: "与えられた脚本ではなく、自分で人生の脚本を書いていますか？", source: "第4回" },
+                { id: 29, habit: 3, title: "最優先事項を優先する", description: "大事を小事の犠牲にしていませんか？", source: "第5回" },
+                { id: 30, habit: 3, title: "第Ⅱ領域に集中する", description: "緊急ではないが重要なことに時間を使いましたか？", source: "第5回" },
+                { id: 31, habit: 3, title: "週間計画を立てる", description: "役割→目標→スケジュールの順で週間計画を立てましたか？", source: "第5回" },
+                { id: 32, habit: 3, title: "役割ごとの目標を設定する", description: "今週、各役割で達成したい成果を1〜2つ決めましたか？", source: "第5回" },
+                { id: 33, habit: 3, title: "優先事項をスケジュールする", description: "スケジュールに優先順位をつけるのではなく、優先事項をスケジュールしましょう。", source: "第5回" },
+                { id: 34, habit: 3, title: "第Ⅰ領域を減らす", description: "緊急かつ重要な危機対応を減らすために、予防に時間を使いましょう。", source: "第5回" },
+                { id: 35, habit: 3, title: "第Ⅲ領域を見分ける", description: "見せかけの緊急に惑わされていませんか？", source: "第5回" },
+                { id: 36, habit: 3, title: "第Ⅳ領域を避ける", description: "暇つぶしや逃避に時間を使いすぎていませんか？", source: "第5回" },
+                { id: 37, habit: 3, title: "人に任せる（デリゲーション）", description: "全面的なデリゲーションを実践していますか？", source: "第5回" },
+                { id: 38, habit: 3, title: "望む成果を明確にする", description: "任せるとき、何を達成するかを明確に伝えていますか？", source: "第5回" },
+                { id: 39, habit: 3, title: "ガイドラインを示す", description: "守るべき基準やルールを明確にしていますか？", source: "第5回" },
+                { id: 40, habit: 3, title: "リソースを明確にする", description: "使える人員、資金、技術を伝えていますか？", source: "第5回" },
+                { id: 41, habit: 3, title: "ノーと言う", description: "優先度の低いことにノーと言えましたか？", source: "第5回" },
+                { id: 42, habit: 3, title: "P/PCバランスを意識する", description: "成果を出しながら、能力を維持・向上させていますか？", source: "第2回" },
+                { id: 43, habit: 4, title: "Win-Winを考える", description: "全員が満足できる解決策を探しましたか？", source: "第6回" },
+                { id: 44, habit: 4, title: "豊かさマインド", description: "パイは十分に大きいと信じていますか？", source: "第6回" },
+                { id: 45, habit: 4, title: "勇気と思いやりのバランス", description: "自分の意見を言いながら、相手も尊重していますか？", source: "第6回" },
+                { id: 46, habit: 4, title: "No Dealの選択肢を持つ", description: "Win-Winが無理なら、取引しない選択肢もあります。", source: "第6回" },
+                { id: 47, habit: 4, title: "信頼口座に預け入れる", description: "大切な人への信頼残高を増やす行動をしましたか？", source: "第6回" },
+                { id: 48, habit: 4, title: "相手を理解する", description: "相手を本当に理解しようとする姿勢は、最も重要な預け入れです。", source: "第6回" },
+                { id: 49, habit: 4, title: "小さなことを気遣う", description: "人間関係では、小さなことが大きな意味を持ちます。", source: "第6回" },
+                { id: 50, habit: 4, title: "約束を守る", description: "約束を守ることは、大きな預け入れになります。", source: "第6回" },
+                { id: 51, habit: 4, title: "期待を明確にする", description: "最初に期待を明確にすれば、後のトラブルを防げます。", source: "第6回" },
+                { id: 52, habit: 4, title: "誠実さを示す", description: "言行一致で、誠実さを示していますか？", source: "第6回" },
+                { id: 53, habit: 4, title: "心から謝る", description: "引き出してしまったときには、心から謝りましょう。", source: "第6回" },
+                { id: 54, habit: 4, title: "無条件の愛", description: "見返りを求めず、本心から相手を愛していますか？", source: "第6回" },
+                { id: 55, habit: 5, title: "まず理解に徹する", description: "相手の話を、理解しようとして聴きましたか？", source: "第8回" },
+                { id: 56, habit: 5, title: "共感による傾聴", description: "相手の身になって、心で聴いていますか？", source: "第8回" },
+                { id: 57, habit: 5, title: "自叙伝的反応を避ける", description: "評価、探り、助言、解釈をせずに聴いていますか？", source: "第8回" },
+                { id: 58, habit: 5, title: "相手の言葉を繰り返す", description: "傾聴の第一段階：相手の言葉をそのまま繰り返してみましょう。", source: "第8回" },
+                { id: 59, habit: 5, title: "相手の言葉を言い換える", description: "傾聴の第二段階：相手の言葉を自分の言葉に置き換えてみましょう。", source: "第8回" },
+                { id: 60, habit: 5, title: "相手の気持ちを言葉にする", description: "傾聴の第三段階：相手の感情を言葉にしてみましょう。", source: "第8回" },
+                { id: 61, habit: 5, title: "言葉と気持ちの両方を反映する", description: "傾聴の第四段階：言葉の置き換えと気持ちの言語化を同時に行いましょう。", source: "第8回" },
+                { id: 62, habit: 5, title: "心理的な空気を送る", description: "相手に理解されている、認められていると感じさせていますか？", source: "第8回" },
+                { id: 63, habit: 5, title: "人格がコミュニケーションの土台", description: "テクニックだけでなく、人格を磨いていますか？", source: "第8回" },
+                { id: 64, habit: 5, title: "そして理解される", description: "相手を理解した後、自分を理解してもらう努力をしましたか？", source: "第9回" },
+                { id: 65, habit: 5, title: "エトス→パトス→ロゴス", description: "人格→感情→論理の順で伝えていますか？", source: "第9回" },
+                { id: 66, habit: 5, title: "一対一の時間を取る", description: "大切な人と一対一で向き合う時間を作りましたか？", source: "第9回" },
+                { id: 67, habit: 5, title: "信頼関係を築いてから話す", description: "信頼残高が十分にある状態で話していますか？", source: "第9回" },
+                { id: 68, habit: 6, title: "シナジーを創り出す", description: "1+1を3以上にする協力ができましたか？", source: "第10回" },
+                { id: 69, habit: 6, title: "違いを尊重する", description: "自分と違う意見を、成長の機会として歓迎しましたか？", source: "第10回" },
+                { id: 70, habit: 6, title: "第3の案を探す", description: "白か黒かではなく、より良い第3の案を探しましたか？", source: "第10回" },
+                { id: 71, habit: 6, title: "謙虚さを持つ", description: "自分のものの見方には限界があることを認めていますか？", source: "第10回" },
+                { id: 72, habit: 6, title: "心を開く", description: "新しい可能性や選択肢を受け入れる姿勢がありますか？", source: "第10回" },
+                { id: 73, habit: 6, title: "シナジー的コミュニケーション", description: "高い信頼と協力で、Win-Winを創り出していますか？", source: "第10回" },
+                { id: 74, habit: 6, title: "防衛的反応を避ける", description: "自分の立場を守ることだけに固執していませんか？", source: "第10回" },
+                { id: 75, habit: 6, title: "妥協で終わらない", description: "お互いに少しずつ譲る妥協ではなく、より高い次元の解を探しましょう。", source: "第10回" },
+                { id: 76, habit: 6, title: "創造的な協力", description: "チームで創造力を発揮し、一人ではできないことを達成しましたか？", source: "第10回" },
+                { id: 77, habit: 6, title: "力の場を変える", description: "抑止力を推進力に変えるシナジーを創り出しましたか？", source: "第10回" },
+                { id: 78, habit: 7, title: "刃を研ぐ", description: "今日、4つの側面のどれかを再新再生する時間を取りましたか？", source: "第11回" },
+                { id: 79, habit: 7, title: "肉体を鍛える", description: "運動、栄養、睡眠に気を配りましたか？", source: "第11回" },
+                { id: 80, habit: 7, title: "精神を磨く", description: "瞑想、読書、自然に触れる時間を取りましたか？", source: "第11回" },
+                { id: 81, habit: 7, title: "知性を高める", description: "学習、計画、執筆など、知的活動をしましたか？", source: "第11回" },
+                { id: 82, habit: 7, title: "社会・情緒を育てる", description: "奉仕、共感、シナジーなど、人間関係を育てましたか？", source: "第11回" },
+                { id: 83, habit: 7, title: "毎日の私的成功", description: "肉体・精神・知性の刃を研ぐ時間を毎日1時間確保しましたか？", source: "第11回" },
+                { id: 84, habit: 7, title: "バランスを取る", description: "4つの側面をバランスよく磨いていますか？", source: "第11回" },
+                { id: 85, habit: 7, title: "継続する", description: "学び→決意→実行のサイクルを継続していますか？", source: "第11回" },
+                { id: 86, habit: 7, title: "流れを変える人になる", description: "悪い脚本を次世代に渡さず、自分の代で変えていますか？", source: "第11回" },
+                { id: 87, habit: 7, title: "他者の可能性を信じる", description: "人のあるべき姿を見て接していますか？", source: "第11回" },
+                { id: 88, habit: 7, title: "上向きの螺旋を登る", description: "常により高い次元を目指し、成長し続けていますか？", source: "第11回" },
+                { id: 89, habit: 0, title: "パラダイムを意識する", description: "自分の頭の中の地図（パラダイム）を意識していますか？", source: "第1回" },
+                { id: 90, habit: 0, title: "原則中心で生きる", description: "時間を超えて不変の原則に従っていますか？", source: "第1回" },
+                { id: 91, habit: 0, title: "インサイド・アウト", description: "外側ではなく、自分の内面から変化を始めていますか？", source: "第1回" },
+                { id: 92, habit: 0, title: "人格主義を実践する", description: "テクニックより人格を磨くことを優先していますか？", source: "第1回" },
+                { id: 93, habit: 0, title: "知識を得る", description: "何をするか、なぜそうするかを理解していますか？", source: "第2回" },
+                { id: 94, habit: 0, title: "スキルを磨く", description: "どうやってするかを習得していますか？", source: "第2回" },
+                { id: 95, habit: 0, title: "意欲を持つ", description: "それをしたいという動機がありますか？", source: "第2回" },
+                { id: 96, habit: 0, title: "私的成功から公的成功へ", description: "まず自立し、その後に相互依存を目指していますか？", source: "第2回" },
+                { id: 97, habit: 0, title: "7つの習慣を教える", description: "学んだことを48時間以内に誰かに教えましたか？", source: "第2回" },
+                { id: 98, habit: 0, title: "本を読み返す", description: "7つの習慣の本を折に触れて読み返していますか？", source: "第2回" },
+                { id: 99, habit: 0, title: "効果性を高める", description: "成果を出しながら、能力も高めていますか？", source: "第2回" },
+                { id: 100, habit: 0, title: "自己宣誓を守る", description: "実践会で宣言したことを、今日も実践しましたか？", source: "実践会全体" }
+            ];
+            console.log(`Loaded ${practiceCards.length} practice cards`);
+        }
+
+        function checkLocalSession() {
+            const savedUser = localStorage.getItem('7habits_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+            }
+        }
+
+        // ----------------------
+        // AUTH
+        // ----------------------
+        function login() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pin = document.getElementById('loginPin').value.trim();
+
+            if (!email || !pin) {
+                alert('メールアドレスとPINを入力してください');
+                return;
+            }
+
+            // Demo mode - create local user
+            currentUser = {
+                email: email,
+                name: email.split('@')[0],
+                streak: 0,
+                totalCheckins: 0,
+                declaration: '',
+                declarationDate: ''
+            };
+            localStorage.setItem('7habits_user', JSON.stringify(currentUser));
+            showMainApp();
+        }
+
+        function showRegister() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pin = document.getElementById('loginPin').value.trim();
+            const name = prompt('表示名を入力してください:');
+
+            if (!email || !pin || !name) {
+                alert('すべての項目を入力してください');
+                return;
+            }
+
+            currentUser = {
+                email: email,
+                name: name,
+                streak: 0,
+                totalCheckins: 0,
+                declaration: '',
+                declarationDate: ''
+            };
+            localStorage.setItem('7habits_user', JSON.stringify(currentUser));
+            showMainApp();
+        }
+
+        function logout() {
+            localStorage.removeItem('7habits_user');
+            currentUser = null;
+            location.reload();
+        }
+
+        // ----------------------
+        // MAIN APP
+        // ----------------------
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('homeScreen').classList.add('active');
+            document.getElementById('bottomNav').style.display = 'flex';
+            document.getElementById('userInfo').style.display = 'block';
+
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('streakCount').textContent = currentUser.streak || 0;
+
+            showTodayCard();
+            updateDeclarationDisplay();
+            renderCardsGrid();
+            updateProfileScreen();
+        }
+
+        function showScreen(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(screen + 'Screen').classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // ----------------------
+        // TODAY'S CARD
+        // ----------------------
+        function showTodayCard() {
+            if (practiceCards.length === 0) return;
+
+            // Get today's card based on date (consistent daily)
+            const today = new Date();
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+            const cardIndex = dayOfYear % practiceCards.length;
+            const card = practiceCards[cardIndex];
+
+            const habitNames = {
+                0: '基本原則',
+                1: '第1の習慣',
+                2: '第2の習慣',
+                3: '第3の習慣',
+                4: '第4の習慣',
+                5: '第5の習慣',
+                6: '第6の習慣',
+                7: '第7の習慣'
+            };
+
+            document.getElementById('cardHabitBadge').textContent = habitNames[card.habit] || '基本原則';
+            document.getElementById('cardTitle').textContent = card.title;
+            document.getElementById('cardDescription').textContent = card.description;
+            document.getElementById('cardSource').textContent = `出典：${card.source}`;
+        }
+
+        // ----------------------
+        // CHECKIN
+        // ----------------------
+        function toggleCheckin(btn) {
+            const aspect = btn.dataset.aspect;
+            checkinState[aspect] = !checkinState[aspect];
+            btn.classList.toggle('selected', checkinState[aspect]);
+
+            const allChecked = Object.values(checkinState).every(v => v);
+            document.getElementById('checkinBtn').disabled = !allChecked;
+        }
+
+        function submitCheckin() {
+            const today = new Date().toISOString().split('T')[0];
+            const lastCheckin = localStorage.getItem('7habits_last_checkin');
+
+            if (lastCheckin === today) {
+                alert('今日はすでにチェックイン済みです！');
+                return;
+            }
+
+            // Update streak
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+            if (lastCheckin === yesterdayStr) {
+                currentUser.streak++;
+            } else if (lastCheckin !== today) {
+                currentUser.streak = 1;
+            }
+
+            currentUser.totalCheckins++;
+            localStorage.setItem('7habits_user', JSON.stringify(currentUser));
+            localStorage.setItem('7habits_last_checkin', today);
+
+            document.getElementById('streakCount').textContent = currentUser.streak;
+            document.getElementById('checkinBtn').textContent = '✓ チェックイン完了!';
+            document.getElementById('checkinBtn').disabled = true;
+
+            // Reset toggle buttons visual
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.style.pointerEvents = 'none';
+            });
+
+            alert(`🎉 チェックイン完了！\n連続 ${currentUser.streak} 日目です！`);
+        }
+
+        // ----------------------
+        // DECLARATION
+        // ----------------------
+        function updateDeclarationDisplay() {
+            if (currentUser.declaration) {
+                document.getElementById('declarationText').textContent = currentUser.declaration;
+                document.getElementById('declarationDate').textContent = `更新: ${currentUser.declarationDate}`;
+            }
+        }
+
+        function openDeclarationModal() {
+            document.getElementById('declarationInput').value = currentUser.declaration || '';
+            document.getElementById('declarationModal').classList.add('active');
+        }
+
+        function closeDeclarationModal() {
+            document.getElementById('declarationModal').classList.remove('active');
+        }
+
+        function saveDeclaration() {
+            const text = document.getElementById('declarationInput').value.trim();
+            if (!text) {
+                alert('宣誓を入力してください');
+                return;
+            }
+
+            currentUser.declaration = text;
+            currentUser.declarationDate = new Date().toLocaleDateString('ja-JP');
+            localStorage.setItem('7habits_user', JSON.stringify(currentUser));
+
+            updateDeclarationDisplay();
+            closeDeclarationModal();
+            alert('自己宣誓を保存しました！');
+        }
+
+        // ----------------------
+        // CARDS
+        // ----------------------
+        function renderCardsGrid(filter = 'all') {
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+
+            const habitNames = {
+                0: '基本',
+                1: 'H1',
+                2: 'H2',
+                3: 'H3',
+                4: 'H4',
+                5: 'H5',
+                6: 'H6',
+                7: 'H7'
+            };
+
+            const filteredCards = filter === 'all'
+                ? practiceCards
+                : practiceCards.filter(c => c.habit === filter);
+
+            filteredCards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card-mini';
+                cardEl.innerHTML = `
+                    <div class="card-mini-habit">${habitNames[card.habit]}</div>
+                    <div class="card-mini-content">
+                        <div class="card-mini-title">${card.title}</div>
+                        <div class="card-mini-desc">${card.description}</div>
+                    </div>
+                    <div class="card-mini-fav" onclick="toggleFavorite(${card.id}, event)">☆</div>
+                `;
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function filterCards(habit) {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            renderCardsGrid(habit);
+        }
+
+        function toggleFavorite(cardId, event) {
+            event.stopPropagation();
+            const favEl = event.currentTarget;
+            favEl.classList.toggle('active');
+            favEl.textContent = favEl.classList.contains('active') ? '★' : '☆';
+        }
+
+        // ----------------------
+        // PROFILE
+        // ----------------------
+        function updateProfileScreen() {
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileStreak').textContent = `${currentUser.streak || 0}日`;
+            document.getElementById('profileTotal').textContent = `${currentUser.totalCheckins || 0}回`;
+        }
+
+        // ----------------------
+        // START
+        // ----------------------
+        init();
+
+        // ----------------------
+        // 30 DAY CHALLENGE
+        // ----------------------
+        let challengeData = null;
+
+        function initChallengeData() {
+            const saved = localStorage.getItem('7habits_challenge');
+            if (saved) {
+                challengeData = JSON.parse(saved);
+                updateChallengeUI();
+            }
+        }
+
+        function startChallenge() {
+            const today = new Date().toISOString().split('T')[0];
+            challengeData = {
+                startDate: today,
+                days: {},
+                completed: false
+            };
+            localStorage.setItem('7habits_challenge', JSON.stringify(challengeData));
+            updateChallengeUI();
+        }
+
+        function updateChallengeUI() {
+            if (!challengeData) {
+                document.getElementById('challengeNotStarted').style.display = 'block';
+                document.getElementById('challengeInProgress').style.display = 'none';
+                document.getElementById('challengeCompleted').style.display = 'none';
+                return;
+            }
+
+            const startDate = new Date(challengeData.startDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const daysPassed = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            const currentDay = Math.min(daysPassed, 30);
+
+            if (challengeData.completed || daysPassed > 30) {
+                showChallengeCompleted();
+                return;
+            }
+
+            document.getElementById('challengeNotStarted').style.display = 'none';
+            document.getElementById('challengeInProgress').style.display = 'block';
+            document.getElementById('challengeCompleted').style.display = 'none';
+
+            // Update stats
+            const successCount = Object.values(challengeData.days).filter(d => d.proactive === true).length;
+            const pendingCount = 30 - Object.keys(challengeData.days).length;
+            document.getElementById('challengeDay').textContent = currentDay;
+            document.getElementById('successCount').textContent = successCount;
+            document.getElementById('pendingCount').textContent = pendingCount;
+
+            // Render calendar
+            renderChallengeCalendar(startDate, currentDay);
+
+            // Today's reflection
+            const todayStr = today.toISOString().split('T')[0];
+            const todayData = challengeData.days[todayStr];
+            if (todayData) {
+                document.getElementById('todayReflectionCard').style.display = 'none';
+            } else {
+                document.getElementById('todayReflectionCard').style.display = 'block';
+                document.getElementById('proactiveYes').classList.remove('selected');
+                document.getElementById('proactiveNo').classList.remove('selected');
+                document.getElementById('todayNote').value = '';
+                document.getElementById('saveReflectionBtn').disabled = true;
+            }
+        }
+
+        function renderChallengeCalendar(startDate, currentDay) {
+            const calendar = document.getElementById('challengeCalendar');
+            calendar.innerHTML = '';
+
+            for (let i = 1; i <= 30; i++) {
+                const dayDate = new Date(startDate);
+                dayDate.setDate(startDate.getDate() + i - 1);
+                const dateStr = dayDate.toISOString().split('T')[0];
+                const dayData = challengeData.days[dateStr];
+
+                const dayEl = document.createElement('div');
+                dayEl.className = 'challenge-day';
+
+                if (i === currentDay) {
+                    dayEl.classList.add('today');
+                } else if (i > currentDay) {
+                    dayEl.classList.add('future');
+                }
+
+                let icon = '';
+                if (dayData) {
+                    if (dayData.proactive) {
+                        dayEl.classList.add('success');
+                        icon = '✓';
+                    } else {
+                        dayEl.classList.add('fail');
+                        icon = '×';
+                    }
+                }
+
+                dayEl.innerHTML = `
+                    <span class="challenge-day-num">${i}</span>
+                    <span class="challenge-day-icon">${icon}</span>
+                `;
+
+                if (dayData && dayData.note) {
+                    dayEl.title = dayData.note;
+                }
+
+                calendar.appendChild(dayEl);
+            }
+        }
+
+        let todayProactive = null;
+
+        function setTodayProactive(value) {
+            todayProactive = value;
+            document.getElementById('proactiveYes').classList.toggle('selected', value === true);
+            document.getElementById('proactiveNo').classList.toggle('selected', value === false);
+            document.getElementById('saveReflectionBtn').disabled = false;
+        }
+
+        function saveTodayReflection() {
+            if (todayProactive === null) {
+                alert('主体的だったかを選択してください');
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            const note = document.getElementById('todayNote').value.trim();
+
+            challengeData.days[today] = {
+                proactive: todayProactive,
+                note: note
+            };
+
+            // Check if challenge is complete
+            if (Object.keys(challengeData.days).length >= 30) {
+                challengeData.completed = true;
+            }
+
+            localStorage.setItem('7habits_challenge', JSON.stringify(challengeData));
+            todayProactive = null;
+            updateChallengeUI();
+            alert('振り返りを保存しました！🎉');
+        }
+
+        function showChallengeCompleted() {
+            document.getElementById('challengeNotStarted').style.display = 'none';
+            document.getElementById('challengeInProgress').style.display = 'none';
+            document.getElementById('challengeCompleted').style.display = 'block';
+
+            const successCount = Object.values(challengeData.days).filter(d => d.proactive === true).length;
+            const rate = Math.round((successCount / 30) * 100);
+
+            document.getElementById('finalSuccessCount').textContent = `${successCount}日`;
+            document.getElementById('successRate').textContent = `${rate}%`;
+
+            if (rate >= 80) {
+                document.getElementById('completionMessage').textContent = '素晴らしい！あなたは主体性の達人です！🏆';
+            } else if (rate >= 50) {
+                document.getElementById('completionMessage').textContent = 'よく頑張りました！次回はさらに高みを目指しましょう！';
+            } else {
+                document.getElementById('completionMessage').textContent = '挑戦を続けることが大切です。もう一度チャレンジしましょう！';
+            }
+        }
+
+        function resetChallenge() {
+            if (confirm('30日間テストをリセットしますか？\n記録はすべて消去されます。')) {
+                localStorage.removeItem('7habits_challenge');
+                challengeData = null;
+                updateChallengeUI();
+            }
+        }
+
+        // Initialize challenge on page load
+        initChallengeData();
+    </script>
+</body>
+
+</html>
