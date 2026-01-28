@@ -715,6 +715,14 @@
                 <span class="streak-label">DAYS</span>
             </span>
         </div>
+        <!-- 今月の宣誓 -->
+        <div id="monthlyDeclarationHeader"
+            style="display:none; margin-top:10px; background:rgba(255,255,255,0.15); border-radius:10px; padding:10px; cursor:pointer;"
+            onclick="showScreen('profile')">
+            <div style="font-size:10px; color:var(--gold); letter-spacing:1px; margin-bottom:4px;">📜 今月の宣誓</div>
+            <div id="headerDeclaration" style="font-size:13px; line-height:1.4; max-height:40px; overflow:hidden;">未設定
+            </div>
+        </div>
     </header>
 
     <main>
@@ -924,6 +932,25 @@
                     <div id="profileTotal">0回</div>
                 </div>
             </div>
+
+            <!-- 今月の宣誓 -->
+            <div class="section-title">📜 今月の宣誓</div>
+            <div class="checkin-card">
+                <div style="margin-bottom:15px;">
+                    <div style="font-size:12px; color:var(--text-gray); margin-bottom:8px;" id="currentMonthLabel">
+                        2026年1月</div>
+                    <textarea id="monthlyDeclarationInput" placeholder="今月の実践会で決めた「取り組みたいこと」を記録しましょう"
+                        style="min-height:80px;"></textarea>
+                </div>
+                <button class="btn-main" onclick="saveMonthlyDeclaration()">保存</button>
+            </div>
+
+            <!-- 宣誓履歴 -->
+            <div class="section-title">📚 過去の宣誓</div>
+            <div id="declarationHistory" class="checkin-card">
+                <div style="color:var(--text-gray); font-size:13px; text-align:center;">まだ履歴がありません</div>
+            </div>
+
             <button class="btn-secondary" onclick="logout()">ログアウト</button>
         </div>
     </main>
@@ -1377,6 +1404,89 @@
             document.getElementById('profileName').textContent = currentUser.name;
             document.getElementById('profileStreak').textContent = `${currentUser.streak || 0}日`;
             document.getElementById('profileTotal').textContent = `${currentUser.totalCheckins || 0}回`;
+            updateMonthlyDeclarationUI();
+        }
+
+        // ----------------------
+        // MONTHLY DECLARATION
+        // ----------------------
+        function getCurrentMonth() {
+            const now = new Date();
+            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        function getMonthLabel(monthKey) {
+            const [year, month] = monthKey.split('-');
+            return `${year}年${parseInt(month)}月`;
+        }
+
+        function loadDeclarations() {
+            const saved = localStorage.getItem('7habits_declarations');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function saveDeclarations(declarations) {
+            localStorage.setItem('7habits_declarations', JSON.stringify(declarations));
+        }
+
+        function updateMonthlyDeclarationUI() {
+            const currentMonth = getCurrentMonth();
+            const declarations = loadDeclarations();
+
+            // Update month label
+            document.getElementById('currentMonthLabel').textContent = getMonthLabel(currentMonth);
+
+            // Load current month's declaration
+            const currentDeclaration = declarations[currentMonth] || '';
+            document.getElementById('monthlyDeclarationInput').value = currentDeclaration;
+
+            // Update header
+            if (currentDeclaration) {
+                document.getElementById('headerDeclaration').textContent = currentDeclaration;
+                document.getElementById('monthlyDeclarationHeader').style.display = 'block';
+            } else {
+                document.getElementById('monthlyDeclarationHeader').style.display = 'none';
+            }
+
+            // Render history
+            renderDeclarationHistory(declarations, currentMonth);
+        }
+
+        function renderDeclarationHistory(declarations, currentMonth) {
+            const container = document.getElementById('declarationHistory');
+            const sortedMonths = Object.keys(declarations)
+                .filter(m => m !== currentMonth && declarations[m])
+                .sort()
+                .reverse();
+
+            if (sortedMonths.length === 0) {
+                container.innerHTML = '<div style="color:var(--text-gray); font-size:13px; text-align:center;">まだ履歴がありません</div>';
+                return;
+            }
+
+            container.innerHTML = sortedMonths.map(month => `
+                <div style="border-bottom:1px solid var(--light-gray); padding:12px 0;">
+                    <div style="font-size:11px; color:var(--gold); margin-bottom:5px;">${getMonthLabel(month)}</div>
+                    <div style="font-size:14px; color:var(--navy); line-height:1.5;">${declarations[month]}</div>
+                </div>
+            `).join('');
+        }
+
+        function saveMonthlyDeclaration() {
+            const declaration = document.getElementById('monthlyDeclarationInput').value.trim();
+            const currentMonth = getCurrentMonth();
+
+            if (!declaration) {
+                alert('宣誓を入力してください');
+                return;
+            }
+
+            const declarations = loadDeclarations();
+            declarations[currentMonth] = declaration;
+            saveDeclarations(declarations);
+
+            updateMonthlyDeclarationUI();
+            alert('今月の宣誓を保存しました！📜');
         }
 
         // ----------------------
