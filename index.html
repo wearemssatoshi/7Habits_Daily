@@ -1140,7 +1140,7 @@
         // ----------------------
         // AUTH
         // ----------------------
-        function login() {
+        async function login() {
             const email = document.getElementById('loginEmail').value.trim();
             const pin = document.getElementById('loginPin').value.trim();
 
@@ -1149,12 +1149,37 @@
                 return;
             }
 
-            // Check if user exists in localStorage
+            // Try to sync from backend first
+            if (SCRIPT_URL) {
+                try {
+                    const response = await fetch(`${SCRIPT_URL}?action=login&email=${encodeURIComponent(email)}&pin=${encodeURIComponent(pin)}`);
+                    const data = await response.json();
+
+                    if (data.success && data.user) {
+                        currentUser = data.user;
+                        localStorage.setItem('7habits_user', JSON.stringify(currentUser));
+
+                        // Sync challenge data if exists
+                        if (data.challenge) {
+                            localStorage.setItem('7habits_challenge', JSON.stringify(data.challenge));
+                        }
+
+                        showMainApp();
+                        return;
+                    } else if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                } catch (e) {
+                    console.log('Backend login failed, using local:', e);
+                }
+            }
+
+            // Fallback to localStorage
             const savedUser = localStorage.getItem('7habits_user');
             if (savedUser) {
                 const parsed = JSON.parse(savedUser);
                 if (parsed.email === email) {
-                    // Existing user - restore data
                     currentUser = parsed;
                     showMainApp();
                     return;
@@ -1174,7 +1199,7 @@
             showMainApp();
         }
 
-        function showRegister() {
+        async function showRegister() {
             const email = document.getElementById('loginEmail').value.trim();
             const pin = document.getElementById('loginPin').value.trim();
             const name = prompt('表示名を入力してください:');
@@ -1184,6 +1209,37 @@
                 return;
             }
 
+            // Try to register on backend first
+            if (SCRIPT_URL) {
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'register',
+                            email: email,
+                            pin: pin,
+                            name: name
+                        })
+                    });
+                    const data = await response.json();
+
+                    if (data.success && data.user) {
+                        currentUser = data.user;
+                        localStorage.setItem('7habits_user', JSON.stringify(currentUser));
+                        showMainApp();
+                        alert('登録完了！ようこそ ' + name + ' さん！');
+                        return;
+                    } else if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                } catch (e) {
+                    console.log('Backend register failed, using local:', e);
+                }
+            }
+
+            // Fallback to local
             currentUser = {
                 email: email,
                 name: name,
