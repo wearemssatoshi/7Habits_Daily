@@ -1215,7 +1215,7 @@
             document.getElementById('checkinBtn').disabled = !allChecked;
         }
 
-        function submitCheckin() {
+        async function submitCheckin() {
             const today = new Date().toISOString().split('T')[0];
             const lastCheckin = localStorage.getItem('7habits_last_checkin');
 
@@ -1247,6 +1247,25 @@
             document.querySelectorAll('.toggle-btn').forEach(btn => {
                 btn.style.pointerEvents = 'none';
             });
+
+            // Sync to backend
+            if (SCRIPT_URL) {
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'checkin',
+                            email: currentUser.email,
+                            date: today,
+                            checkin: checkinState
+                        })
+                    });
+                } catch (e) {
+                    console.log('Backend sync skipped:', e);
+                }
+            }
 
             alert(`🎉 チェックイン完了！\n連続 ${currentUser.streak} 日目です！`);
         }
@@ -1473,7 +1492,7 @@
             document.getElementById('saveReflectionBtn').disabled = false;
         }
 
-        function saveTodayReflection() {
+        async function saveTodayReflection() {
             if (todayProactive === null) {
                 alert('主体的だったかを選択してください');
                 return;
@@ -1493,6 +1512,25 @@
             }
 
             localStorage.setItem('7habits_challenge', JSON.stringify(challengeData));
+
+            // Sync to backend
+            if (SCRIPT_URL) {
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'saveChallenge',
+                            email: currentUser.email,
+                            challenge: challengeData
+                        })
+                    });
+                } catch (e) {
+                    console.log('Backend sync skipped:', e);
+                }
+            }
+
             todayProactive = null;
             updateChallengeUI();
             alert('振り返りを保存しました！🎉');
