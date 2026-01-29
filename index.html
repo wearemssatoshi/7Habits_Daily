@@ -1038,6 +1038,17 @@
         // GAS Backend URL
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWy123CTBdO7Sd87VfTi3lK5kVmzjwujJp0GIUr-ZAyUgP4QiscLIcPvX9oGB3fWh0/exec';
 
+        // 日本時間 (JST, UTC+9) で日付文字列を取得
+        function getJSTDateString(date = new Date()) {
+            const jstOffset = 9 * 60; // JST is UTC+9
+            const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+            const jstDate = new Date(utc + (jstOffset * 60000));
+            const year = jstDate.getFullYear();
+            const month = String(jstDate.getMonth() + 1).padStart(2, '0');
+            const day = String(jstDate.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         // ----------------------
         // INITIALIZATION
         // ----------------------
@@ -1350,7 +1361,7 @@
         }
 
         async function submitCheckin() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = getJSTDateString();
             const lastCheckin = localStorage.getItem('7habits_last_checkin');
 
             if (lastCheckin === today) {
@@ -1361,7 +1372,7 @@
             // Update streak
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            const yesterdayStr = getJSTDateString(yesterday);
 
             if (lastCheckin === yesterdayStr) {
                 currentUser.streak++;
@@ -1600,7 +1611,7 @@
         }
 
         function startChallenge() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = getJSTDateString();
             challengeData = {
                 startDate: today,
                 days: {},
@@ -1644,7 +1655,7 @@
             renderChallengeCalendar(startDate, currentDay);
 
             // Today's reflection
-            const todayStr = today.toISOString().split('T')[0];
+            const todayStr = getJSTDateString(today);
             const todayData = challengeData.days[todayStr];
 
             // 常に振り返りカードを表示
@@ -1679,7 +1690,7 @@
             for (let i = 1; i <= 30; i++) {
                 const dayDate = new Date(startDate);
                 dayDate.setDate(startDate.getDate() + i - 1);
-                const dateStr = dayDate.toISOString().split('T')[0];
+                const dateStr = getJSTDateString(dayDate);
                 const dayData = challengeData.days[dateStr];
 
                 const dayEl = document.createElement('div');
@@ -1725,7 +1736,7 @@
 
         // 編集モードに切り替える関数
         function enableReflectionEdit() {
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = getJSTDateString();
             const todayData = challengeData.days[todayStr];
 
             document.getElementById('reflectionViewMode').style.display = 'none';
@@ -1768,7 +1779,7 @@
                 return;
             }
 
-            const today = new Date().toISOString().split('T')[0];
+            const today = getJSTDateString();
             const note = document.getElementById('todayNote').value.trim();
 
             challengeData.days[today] = {
