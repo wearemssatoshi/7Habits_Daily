@@ -872,23 +872,47 @@
 
                 <!-- 今日の振り返り -->
                 <div class="checkin-card" id="todayReflectionCard">
-                    <div class="checkin-title">✍️ 今日の振り返り</div>
-                    <div style="margin-bottom:15px;">
-                        <div style="font-size:13px; color:var(--text-gray); margin-bottom:10px;">今日は主体的に過ごせましたか？</div>
-                        <div style="display:flex; gap:10px;">
-                            <button class="toggle-btn" id="proactiveYes" onclick="setTodayProactive(true)"
-                                style="flex:1;">😊 はい</button>
-                            <button class="toggle-btn" id="proactiveNo" onclick="setTodayProactive(false)"
-                                style="flex:1;">😔 いいえ</button>
+                    <div class="checkin-title" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>✍️ 今日の振り返り</span>
+                        <span id="reflectionStatusBadge"
+                            style="display:none; background:var(--success); color:white; font-size:10px; padding:4px 10px; border-radius:15px;">✅
+                            記録済み</span>
+                    </div>
+                    <!-- 記録済み表示モード -->
+                    <div id="reflectionViewMode" style="display:none;">
+                        <div
+                            style="background:var(--light-gray); border-radius:10px; padding:15px; margin-bottom:15px;">
+                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                                <span id="viewProactiveIcon" style="font-size:24px;">😊</span>
+                                <span id="viewProactiveText"
+                                    style="font-size:14px; font-weight:600; color:var(--navy);">主体的に過ごせた</span>
+                            </div>
+                            <div style="font-size:12px; color:var(--text-gray); margin-bottom:5px;">今日の学び・気づき</div>
+                            <div id="viewNoteText" style="font-size:14px; color:var(--navy); line-height:1.6;">メモなし
+                            </div>
                         </div>
+                        <button class="btn-secondary" onclick="enableReflectionEdit()">✏️ 編集する</button>
                     </div>
-                    <div>
-                        <div style="font-size:13px; color:var(--text-gray); margin-bottom:10px;">今日の学び・気づき</div>
-                        <textarea id="todayNote" placeholder="例：朝の渋滞でイライラしそうになったが、一時停止して音楽を楽しむ選択をした。"
-                            style="min-height:80px;"></textarea>
+                    <!-- 編集モード -->
+                    <div id="reflectionEditMode">
+                        <div style="margin-bottom:15px;">
+                            <div style="font-size:13px; color:var(--text-gray); margin-bottom:10px;">今日は主体的に過ごせましたか？
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <button class="toggle-btn" id="proactiveYes" onclick="setTodayProactive(true)"
+                                    style="flex:1;">😊 はい</button>
+                                <button class="toggle-btn" id="proactiveNo" onclick="setTodayProactive(false)"
+                                    style="flex:1;">😔 いいえ</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:13px; color:var(--text-gray); margin-bottom:10px;">今日の学び・気づき</div>
+                            <textarea id="todayNote" placeholder="例：朝の渋滞でイライラしそうになったが、一時停止して音楽を楽しむ選択をした。"
+                                style="min-height:80px;"></textarea>
+                        </div>
+                        <button class="btn-main" onclick="saveTodayReflection()" id="saveReflectionBtn"
+                            disabled>振り返りを保存</button>
                     </div>
-                    <button class="btn-main" onclick="saveTodayReflection()" id="saveReflectionBtn"
-                        disabled>振り返りを保存</button>
                 </div>
             </div>
 
@@ -1622,10 +1646,25 @@
             // Today's reflection
             const todayStr = today.toISOString().split('T')[0];
             const todayData = challengeData.days[todayStr];
+
+            // 常に振り返りカードを表示
+            document.getElementById('todayReflectionCard').style.display = 'block';
+
             if (todayData) {
-                document.getElementById('todayReflectionCard').style.display = 'none';
+                // 記録済み: 表示モード
+                document.getElementById('reflectionStatusBadge').style.display = 'inline';
+                document.getElementById('reflectionViewMode').style.display = 'block';
+                document.getElementById('reflectionEditMode').style.display = 'none';
+
+                // 記録内容を表示
+                document.getElementById('viewProactiveIcon').textContent = todayData.proactive ? '😊' : '😔';
+                document.getElementById('viewProactiveText').textContent = todayData.proactive ? '主体的に過ごせた' : '反応的になってしまった';
+                document.getElementById('viewNoteText').textContent = todayData.note || 'メモなし';
             } else {
-                document.getElementById('todayReflectionCard').style.display = 'block';
+                // 未記録: 編集モード
+                document.getElementById('reflectionStatusBadge').style.display = 'none';
+                document.getElementById('reflectionViewMode').style.display = 'none';
+                document.getElementById('reflectionEditMode').style.display = 'block';
                 document.getElementById('proactiveYes').classList.remove('selected');
                 document.getElementById('proactiveNo').classList.remove('selected');
                 document.getElementById('todayNote').value = '';
@@ -1683,6 +1722,26 @@
         }
 
         let todayProactive = null;
+
+        // 編集モードに切り替える関数
+        function enableReflectionEdit() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayData = challengeData.days[todayStr];
+
+            document.getElementById('reflectionViewMode').style.display = 'none';
+            document.getElementById('reflectionEditMode').style.display = 'block';
+
+            if (todayData) {
+                // 既存の値をフォームにセット
+                todayProactive = todayData.proactive;
+                document.getElementById('proactiveYes').classList.toggle('selected', todayData.proactive === true);
+                document.getElementById('proactiveNo').classList.toggle('selected', todayData.proactive === false);
+                document.getElementById('todayNote').value = todayData.note || '';
+                document.getElementById('saveReflectionBtn').disabled = false;
+                document.getElementById('saveReflectionBtn').textContent = '振り返りを更新';
+            }
+        }
+
 
         function showDayDetail(dayNum, dateStr, dayData) {
             document.getElementById('dayDetailIcon').textContent = dayData.proactive ? '😊' : '😔';
@@ -1743,6 +1802,7 @@
             }
 
             todayProactive = null;
+            document.getElementById('saveReflectionBtn').textContent = '振り返りを保存';
             updateChallengeUI();
             alert('振り返りを保存しました！🎉');
         }
